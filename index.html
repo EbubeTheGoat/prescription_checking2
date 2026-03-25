@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<!--
+  DOCTYPE tells the browser: "This is a modern HTML5 page."
+  Always include this as the very first line of every HTML file.
+-->
+
+<html lang="en">
+<!--
+  <html> is the root (top-level) element that wraps everything.
+  lang="en" helps screen readers and search engines know the page language.
+-->
+
+<head>
+  <!--
+    <head> contains invisible setup info — things the browser needs
+    but the user doesn't directly see on the page.
+  -->
+
+  <meta charset="UTF-8" />
+  <!-- charset="UTF-8" means the page supports all characters, including
+       special symbols and accented letters. Always include this. -->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!--
+    This meta tag makes the page RESPONSIVE — it tells the browser:
+    "Don't zoom out on mobile. Use the device's real width."
+    Without this, mobile phones would show a tiny desktop-sized page.
+    Bootstrap REQUIRES this line to work properly on mobile.
+  -->
+
+  <title>RxChecker — Prescription Safety Tool</title>
+  <!-- The text that appears in the browser tab -->
+
+  <!--
+    ============================================================
+    BOOTSTRAP CSS — loaded from a CDN (Content Delivery Network)
+    A CDN is a server on the internet that hosts files for you.
+    You don't need to download Bootstrap; just link to it here.
+
+    Bootstrap Docs: https://getbootstrap.com/docs/5.3/getting-started/introduction/
+    CDN Link source: https://getbootstrap.com/docs/5.3/getting-started/download/#cdn-via-jsdelivr
+    ============================================================
+  -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <!--
+    Bootstrap Icons — a free icon library that pairs perfectly with Bootstrap.
+    We use these for small visual symbols (like a pill icon, email icon, etc.)
+
+    Icon browser: https://icons.getbootstrap.com/
+    CDN source: https://icons.getbootstrap.com/#install
+  -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    rel="stylesheet"
+  />
+
+  <!--
+    Google Fonts — free, high-quality fonts loaded from Google's CDN.
+    "DM Serif Display" is used for headings (elegant, medical-journal feel).
+    "DM Sans" is used for body text (clean and readable).
+
+    Browse fonts: https://fonts.google.com/
+  -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /*
+      <style> is where we write our own CSS to customize
+      Bootstrap's default look. CSS rules follow this pattern:
+        selector { property: value; }
+    */
+
+    /* ── Global Reset & Variables ───────────────────────── */
+
+    :root {
+      /*
+        :root targets the entire page.
+        CSS variables (--name: value) let us reuse colors
+        across all our rules. Change one value here and
+        it updates everywhere.
+      */
+      --rx-green:  #1a6b4a;   /* Deep pharmacy green — primary brand color */
+      --rx-light:  #e8f5ee;   /* Very light mint — used for backgrounds */
+      --rx-accent: #f0a500;   /* Warm amber — used for highlights/warnings */
+      --rx-dark:   #111c17;   /* Near-black — used for text */
+      --rx-muted:  #6b7c74;   /* Grey-green — used for secondary text */
+      --rx-card:   #ffffff;   /* Pure white for cards */
+      --rx-border: #d0e6d9;   /* Soft green border color */
+    }
+
+    * {
+      /* The * selector targets EVERY element on the page */
+      box-sizing: border-box;
+      /*
+        box-sizing: border-box means: when you set a width,
+        padding and border are INCLUDED in that width.
+        This prevents elements from accidentally overflowing.
+        It's considered best practice to apply this globally.
+      */
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      /* Sets our chosen body font. The comma means "fall back to
+         any sans-serif font if DM Sans fails to load." */
+      background-color: #f4f9f6;
+      /* A very subtle green-tinted white background */
+      color: var(--rx-dark);
+      /* All text defaults to our near-black color */
+      line-height: 1.65;
+      /* Increases spacing between lines of text for readability */
+    }
+
+    h1, h2, h3, h4, h5 {
+      font-family: 'DM Serif Display', serif;
+      /* Headings use our elegant serif font */
+    }
+
+    /* ── Navigation Bar ─────────────────────────────────── */
+
+    .navbar {
+      /*
+        .navbar targets any element with class="navbar".
+        Bootstrap already has a .navbar class — we're just
+        ADDING to it / overriding specific properties.
+      */
+      background-color: var(--rx-green) !important;
+      /*
+        !important forces this value to override Bootstrap's
+        default .navbar background. Use sparingly.
+      */
+      padding: 1rem 0;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      /* Subtle shadow makes the navbar appear to float above the page */
+    }
+
+    .navbar-brand {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      color: #fff !important;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-link {
+      color: rgba(255,255,255,0.85) !important;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* ── Hero Section (top banner area) ────────────────── */
+
+    .hero-section {
+      background: linear-gradient(135deg, var(--rx-green) 0%, #2d9b6a 100%);
+      /*
+        linear-gradient creates a smooth color transition.
+        135deg sets the angle (diagonal).
+        The two colors form the gradient start and end.
+      */
+      color: white;
+      padding: 4rem 0 3rem;
+      text-align: center;
+    }
+
+    .hero-section h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      /*
+        clamp(min, preferred, max) is a responsive font size.
+        On small screens: 2rem minimum.
+        On large screens: 3.2rem maximum.
+        5vw = 5% of the viewport (screen) width — scales fluidly.
+      */
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-subtitle {
+      opacity: 0.85;
+      font-size: 1.05rem;
+      max-width: 520px;
+      margin: 0 auto 1.5rem;
+      /* auto left/right margin = horizontally centered */
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.35);
+      color: white;
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px; /* Makes a pill/capsule shape */
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+
+    /* ── Step Cards (the 3 method cards) ───────────────── */
+
+    .step-card {
+      background: var(--rx-card);
+      border: 1px solid var(--rx-border);
+      border-radius: 16px;
+      padding: 1.8rem;
+      height: 100%;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+      /*
+        transition smoothly animates property changes.
+        "0.2s ease" means the animation takes 0.2 seconds
+        with a natural ease-in-out speed curve.
+      */
+    }
+
+    .step-card:hover {
+      /* :hover applies styles when the mouse is over the element */
+      box-shadow: 0 8px 28px rgba(26, 107, 74, 0.12);
+      transform: translateY(-3px);
+      /*
+        translateY(-3px) lifts the card 3 pixels upward on hover.
+        Combined with the shadow, this creates a "lift" effect.
+      */
+    }
+
+    .step-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--rx-light);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* These three lines center the icon inside the box */
+      font-size: 1.4rem;
+      color: var(--rx-green);
+      margin-bottom: 1rem;
+    }
+
+    .step-number {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--rx-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.3rem;
+    }
+
+    /* ── Main Form Panel ────────────────────────────────── */
+
+    .form-panel {
+      background: var(--rx-card);
+      border: 1px solid var(--rx-border);
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      /* gap sets space between flex children */
+    }
+
+    .section-divider span {
+      white-space: nowrap; /* prevents text from wrapping to next line */
+      font-size: 0.8rem;
+      color: var(--rx-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .section-divider::before,
+    .section-divider::after {
+      content: '';  /* Creates a visual element with no text content */
+      flex: 1;      /* Takes up all remaining space */
+      height: 1px;
+      background: var(--rx-border);
+    }
+
+    /* ── Upload Drop Zone ───────────────────────────────── */
+
+    .upload-zone {
+      border: 2px dashed var(--rx-border);
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      /* cursor: pointer shows the hand icon when hovering */
+      transition: all 0.2s ease;
+      background: var(--rx-light);
+      position: relative;
+    }
+
+    .upload-zone:hover,
+    .upload-zone.dragover {
+      border-color: var(--rx-green);
+      background: #d4eddf;
+    }
+
+    .upload-zone input[type="file"] {
+      /*
+        The actual file input is invisible — we style the zone
+        around it and use JavaScript to trigger it on click.
+      */
+      position: absolute;
+      inset: 0; /* shorthand for top:0; right:0; bottom:0; left:0 */
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .upload-zone .upload-icon {
+      font-size: 2.5rem;
+      color: var(--rx-green);
+      margin-bottom: 0.5rem;
+    }
+
+    #file-name-display {
+      font-size: 0.85rem;
+      color: var(--rx-green);
+      font-weight: 600;
+      margin-top: 0.5rem;
+      min-height: 1.2em; /* reserves space so the layout doesn't jump */
+    }
+
+    /* ── Bootstrap Form Overrides ───────────────────────── */
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: var(--rx-green);
+      box-shadow: 0 0 0 3px rgba(26,107,74,0.15);
+      /* :focus applies when the user clicks into an input field */
+    }
+
+    /* ── Buttons ────────────────────────────────────────── */
+
+    .btn-rx-primary {
+      background-color: var(--rx-green);
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 2rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: background-color 0.2s, transform 0.15s;
+    }
+
+    .btn-rx-primary:hover {
+      background-color: #155a3e;
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    .btn-rx-primary:disabled {
+      /* Grayed out state when the button is disabled */
+      opacity: 0.6;
+      transform: none;
+      cursor: not-allowed;
+    }
+
+    /* ── Results Panel ──────────────────────────────────── */
+
+    #results-section {
+      display: none;
+      /* Hidden by default. JavaScript will change this to "block" */
+    }
+
+    .result-card {
+      background: var(--rx-card);
+      border: 1px solid var(--rx-border);
+      border-radius: 16px;
+      overflow: hidden;
+      /* overflow: hidden ensures child elements don't stick out */
+    }
+
+    .result-card-header {
+      padding: 1rem 1.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--rx-border);
+    }
+
+    .result-card-body {
+      padding: 1.2rem 1.5rem;
+      font-size: 0.92rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      /*
+        white-space: pre-wrap preserves line breaks from the API
+        response text, while still allowing word wrapping.
+      */
+      color: var(--rx-dark);
+    }
+
+    .header-drugs    { background: #e8f5ee; color: #1a6b4a; }
+    .header-analysis { background: #fff8e1; color: #7c5c00; }
+    .header-warnings { background: #fdecea; color: #b71c1c; }
+    .header-email    { background: #e8f0fe; color: #1a237e; }
+
+    /* ── Spinner (loading animation) ───────────────────── */
+
+    #loading-spinner {
+      display: none;
+      /* Also hidden by default. Shown during API calls. */
+    }
+
+    /* ── Footer ─────────────────────────────────────────── */
+
+    footer {
+      background: var(--rx-dark);
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.82rem;
+      margin-top: 4rem;
+    }
+
+    footer strong {
+      color: rgba(255,255,255,0.85);
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════════════════════════════
+       NAVIGATION BAR
+       Bootstrap Docs: https://getbootstrap.com/docs/5.3/components/navbar/
+       ══════════════════════════════════════════════════════════ -->
+  <nav class="navbar navbar-expand-lg">
+    <!--
+      navbar-expand-lg: On large screens (≥992px), show all nav links.
+      On smaller screens, collapse them into a hamburger menu.
+    -->
+    <div class="container">
+      <!--
+        .container is a Bootstrap class that adds automatic left/right
+        padding and centers content within a max-width.
+        Docs: https://getbootstrap.com/docs/5.3/layout/containers/
+      -->
+      <a class="navbar-brand" href="#">
+        <i class="bi bi-capsule me-2"></i>RxChecker
+        <!--
+          bi bi-capsule = Bootstrap Icon (pill/capsule shape)
+          me-2 = margin-end (right margin) of 2 units (Bootstrap spacing)
+          Spacing docs: https://getbootstrap.com/docs/5.3/utilities/spacing/
+        -->
+      </a>
+
+      <!-- Hamburger button — only visible on small screens -->
+      <button class="navbar-toggler" type="button"
+        data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <!--
+          data-bs-toggle and data-bs-target are Bootstrap's JavaScript
+          hooks. They tell Bootstrap: "when clicked, collapse/expand #navMenu"
+        -->
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto">
+          <!--
+            ms-auto = margin-start: auto. Pushes the list to the right.
+            In Bootstrap's flex layout, auto margins fill available space.
+          -->
+          <li class="nav-item">
+            <a class="nav-link" href="#how-it-works">How It Works</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#checker">Check Prescription</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       HERO SECTION
+       ══════════════════════════════════════════════════════════ -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-badge">
+        <i class="bi bi-shield-check me-1"></i> Powered by RxNorm & AI
+      </div>
+      <h1>Prescription Safety Checker</h1>
+      <p class="hero-subtitle">
+        Upload a prescription image or enter drug names manually to check for
+        dangerous drug interactions in seconds.
+      </p>
+      <a href="#checker" class="btn btn-light fw-semibold px-4 py-2 rounded-pill">
+        <!--
+          btn btn-light = Bootstrap white button
+          fw-semibold   = font-weight semi-bold
+          px-4          = horizontal padding 4 units
+          py-2          = vertical padding 2 units
+          rounded-pill  = fully rounded corners
+        -->
+        <i class="bi bi-arrow-down-circle me-1"></i> Start Checking
+      </a>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       HOW IT WORKS — 3-column card grid
+       Bootstrap Grid Docs: https://getbootstrap.com/docs/5.3/layout/grid/
+       ══════════════════════════════════════════════════════════ -->
+  <section id="how-it-works" class="py-5">
+    <!--
+      py-5 = padding top AND bottom of 5 units (Bootstrap spacing)
+      Bootstrap uses a 12-column grid. Columns are placed inside rows.
+    -->
+    <div class="container">
+      <div class="text-center mb-4">
+        <h2>How It Works</h2>
+        <p class="text-muted">Three simple steps to safer prescriptions</p>
+        <!--
+          text-muted = Bootstrap utility class that makes text grey
+        -->
+      </div>
+
+      <div class="row g-4">
+        <!--
+          row     = Bootstrap grid row (a flex container)
+          g-4     = "gutter" (gap) of 4 units between columns
+          Row docs: https://getbootstrap.com/docs/5.3/layout/grid/#gutters
+        -->
+
+        <!-- Step 1 -->
+        <div class="col-md-4">
+          <!--
+            col-md-4 = on medium screens (≥768px) and above,
+            this column takes up 4 out of 12 columns (= 1/3 width).
+            On smaller screens, it stacks to full width automatically.
+          -->
+          <div class="step-card">
+            <div class="step-number">Step 01</div>
+            <div class="step-icon">
+              <i class="bi bi-image"></i>
+            </div>
+            <h5>Upload or Enter</h5>
+            <p class="text-muted small">
+              <!--
+                small = Bootstrap class that makes text slightly smaller
+              -->
+              Upload a photo of your prescription or type drug names manually.
+              Our AI extracts the medication names automatically.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="col-md-4">
+          <div class="step-card">
+            <div class="step-number">Step 02</div>
+            <div class="step-icon">
+              <i class="bi bi-search-heart"></i>
+            </div>
+            <h5>AI Research</h5>
+            <p class="text-muted small">
+              The system researches each drug's active constituents and
+              checks the live RxNorm database for known interactions.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="col-md-4">
+          <div class="step-card">
+            <div class="step-number">Step 03</div>
+            <div class="step-icon">
+              <i class="bi bi-envelope-check"></i>
+            </div>
+            <h5>Get Your Report</h5>
+            <p class="text-muted small">
+              View your results instantly on screen. Optionally receive
+              a full safety report directly to your email inbox.
+            </p>
+          </div>
+        </div>
+
+      </div><!-- /row -->
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       MAIN CHECKER FORM
+       Bootstrap Forms: https://getbootstrap.com/docs/5.3/forms/overview/
+       ══════════════════════════════════════════════════════════ -->
+  <section id="checker" class="py-5" style="background: var(--rx-light);">
+    <div class="container">
+      <div class="row justify-content-center">
+        <!--
+          justify-content-center = horizontally centers the columns
+          inside the row (Bootstrap flex utility).
+        -->
+        <div class="col-lg-8">
+          <!--
+            col-lg-8 = on large screens (≥992px), this takes 8/12 columns
+            (about 66% wide), centered thanks to justify-content-center.
+          -->
+
+          <div class="text-center mb-4">
+            <h2>Check a Prescription</h2>
+            <p class="text-muted">Upload an image OR type drug names below</p>
+          </div>
+
+          <div class="form-panel">
+
+            <!-- ── IMAGE UPLOAD ──────────────────────────────── -->
+            <label class="form-label fw-semibold">
+              <!--
+                form-label  = Bootstrap styling for labels
+                fw-semibold = font-weight semi-bold
+              -->
+              <i class="bi bi-image me-1"></i> Prescription Image
+              <span class="text-muted fw-normal ms-1">(optional)</span>
+            </label>
+
+            <div class="upload-zone" id="upload-zone">
+              <!--
+                This is our custom styled upload area.
+                The real file input sits invisibly inside it.
+              -->
+              <input type="file" id="prescription-image"
+                     accept="image/*" />
+              <!--
+                accept="image/*" restricts the file picker to images only.
+                The id lets JavaScript find this element.
+              -->
+              <div class="upload-icon">
+                <i class="bi bi-cloud-arrow-up"></i>
+              </div>
+              <p class="mb-1 fw-semibold text-secondary">
+                Click to upload or drag & drop
+              </p>
+              <p class="text-muted small mb-0">PNG, JPG, JPEG supported</p>
+              <div id="file-name-display"></div>
+              <!-- JavaScript will write the selected file name here -->
+            </div>
+
+            <!-- ── OR DIVIDER ────────────────────────────────── -->
+            <div class="section-divider">
+              <span>or enter manually</span>
+            </div>
+
+            <!-- ── DRUG NAMES TEXT INPUT ─────────────────────── -->
+            <div class="mb-3">
+              <!--
+                mb-3 = margin-bottom 3 units — adds space below this div
+                Bootstrap spacing: https://getbootstrap.com/docs/5.3/utilities/spacing/
+              -->
+              <label for="drug-names" class="form-label fw-semibold">
+                <i class="bi bi-capsule me-1"></i> Drug Names
+              </label>
+              <textarea
+                id="drug-names"
+                class="form-control"
+                <!--
+                  form-control = Bootstrap class that styles inputs,
+                  textareas, and selects consistently.
+                  Docs: https://getbootstrap.com/docs/5.3/forms/form-control/
+                -->
+                rows="3"
+                placeholder="e.g. Warfarin, Aspirin, Metformin"
+              ></textarea>
+              <div class="form-text text-muted">
+                <!--
+                  form-text = Bootstrap class for helper text below inputs
+                  Docs: https://getbootstrap.com/docs/5.3/forms/form-control/#form-text
+                -->
+                Separate multiple drugs with commas. Brand or generic names accepted.
+              </div>
+            </div>
+
+            <!-- ── EMAIL INPUT ───────────────────────────────── -->
+            <div class="mb-4">
+              <label for="user-email" class="form-label fw-semibold">
+                <i class="bi bi-envelope me-1"></i> Email Results
+                <span class="text-muted fw-normal ms-1">(optional)</span>
+              </label>
+              <input
+                type="email"
+                id="user-email"
+                class="form-control"
+                placeholder="your@email.com"
+              />
+              <div class="form-text text-muted">
+                We'll send your full report to this address.
+              </div>
+            </div>
+
+            <!-- ── SUBMIT BUTTON ─────────────────────────────── -->
+            <div class="d-grid">
+              <!--
+                d-grid = Bootstrap utility that makes the button
+                stretch to full width (display: grid).
+                Docs: https://getbootstrap.com/docs/5.3/components/buttons/#block-buttons
+              -->
+              <button id="check-btn" class="btn btn-rx-primary" type="button">
+                <i class="bi bi-shield-check me-2"></i>
+                Run Prescription Check
+              </button>
+            </div>
+
+            <!-- ── LOADING SPINNER ───────────────────────────── -->
+            <div id="loading-spinner" class="text-center mt-4">
+              <!--
+                Bootstrap Spinners: https://getbootstrap.com/docs/5.3/components/spinners/
+              -->
+              <div class="spinner-border text-success" role="status">
+                <span class="visually-hidden">Loading...</span>
+                <!--
+                  visually-hidden is a Bootstrap accessibility class.
+                  The text is hidden visually but read by screen readers.
+                  Docs: https://getbootstrap.com/docs/5.3/helpers/visually-hidden/
+                -->
+              </div>
+              <p class="text-muted mt-2 small">
+                Analyzing prescription... this may take a moment.
+              </p>
+            </div>
+
+          </div><!-- /form-panel -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       RESULTS SECTION (hidden until API returns data)
+       Bootstrap Alerts: https://getbootstrap.com/docs/5.3/components/alerts/
+       ══════════════════════════════════════════════════════════ -->
+  <section id="results-section" class="py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+          <h3 class="mb-4 text-center">
+            <i class="bi bi-clipboard2-pulse me-2 text-success"></i>
+            Your Results
+          </h3>
+
+          <!-- ── DRUGS IDENTIFIED ──────────────────────────── -->
+          <div class="result-card mb-3">
+            <div class="result-card-header header-drugs">
+              <i class="bi bi-capsule"></i> Drugs Identified
+            </div>
+            <div class="result-card-body" id="result-drugs">
+              —
+            </div>
+          </div>
+
+          <!-- ── DRUG ANALYSIS ─────────────────────────────── -->
+          <div class="result-card mb-3">
+            <div class="result-card-header header-analysis">
+              <i class="bi bi-journal-text"></i> Drug Analysis
+            </div>
+            <div class="result-card-body" id="result-analysis">
+              —
+            </div>
+          </div>
+
+          <!-- ── CONTRAINDICATIONS ─────────────────────────── -->
+          <div class="result-card mb-3">
+            <div class="result-card-header header-warnings">
+              <i class="bi bi-exclamation-triangle"></i> Contraindications &amp; Interactions
+            </div>
+            <div class="result-card-body" id="result-contraindications">
+              —
+            </div>
+          </div>
+
+          <!-- ── EMAIL STATUS (shown only if email was provided) ── -->
+          <div class="result-card mb-3" id="email-status-card" style="display:none;">
+            <div class="result-card-header header-email">
+              <i class="bi bi-envelope-check"></i> Email Status
+            </div>
+            <div class="result-card-body" id="result-email-status">
+              —
+            </div>
+          </div>
+
+          <!-- ── DISCLAIMER ALERT ──────────────────────────── -->
+          <div class="alert alert-warning d-flex gap-2 mt-4" role="alert">
+            <!--
+              alert alert-warning = Bootstrap yellow warning box
+              d-flex gap-2        = flex layout with a small gap
+              Alerts docs: https://getbootstrap.com/docs/5.3/components/alerts/
+            -->
+            <i class="bi bi-exclamation-circle-fill flex-shrink-0 mt-1"></i>
+            <div>
+              <strong>Medical Disclaimer:</strong> This tool is for informational
+              purposes only and does not replace professional medical advice.
+              Always consult your doctor or pharmacist before making any
+              decisions about your medications.
+            </div>
+          </div>
+
+          <!-- ── RUN ANOTHER CHECK BUTTON ─────────────────── -->
+          <div class="text-center mt-3">
+            <button class="btn btn-outline-success rounded-pill px-4"
+              onclick="resetForm()">
+              <!--
+                btn-outline-success = Bootstrap outlined green button
+                Docs: https://getbootstrap.com/docs/5.3/components/buttons/#outline-buttons
+              -->
+              <i class="bi bi-arrow-counterclockwise me-1"></i>
+              Check Another Prescription
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════════════════════════ -->
+  <footer>
+    <strong>RxChecker</strong> — For educational use only. Not a substitute for professional medical advice.
+  </footer>
+
+
+  <!--
+    ============================================================
+    BOOTSTRAP JS BUNDLE — loaded at the BOTTOM of the page.
+    Why the bottom? So the page content loads before the scripts run,
+    which makes the page feel faster to the user.
+
+    This bundle includes Popper.js (needed for dropdowns/tooltips).
+    CDN source: https://getbootstrap.com/docs/5.3/getting-started/download/#cdn-via-jsdelivr
+    ============================================================
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!--
+    Our custom JavaScript file — loaded AFTER Bootstrap
+    so Bootstrap's functions are available when our script runs.
+  -->
+  <script src="app.js"></script>
+
+</body>
+</html>
