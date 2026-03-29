@@ -101,7 +101,23 @@ uploadZone.addEventListener("drop", function (event) {
     fileNameDisplay.textContent = "✓ " + droppedFile.name;
   }
 });
+// ── SECTION 4b: PASTE IMAGE SUPPORT ──────────────────────────────────────
 
+document.addEventListener("paste", function (event) {
+  const items = event.clipboardData && event.clipboardData.items;
+  if (!items) return;
+
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].type.startsWith("image/")) {
+      const file = items[i].getAsFile();
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(file);
+      fileInput.files = dataTransfer.files;
+      fileNameDisplay.textContent = "✓ Pasted image";
+      break;
+    }
+  }
+});
 
 // ── SECTION 5: MAIN BUTTON CLICK HANDLER ─────────────────────────────────
 //
